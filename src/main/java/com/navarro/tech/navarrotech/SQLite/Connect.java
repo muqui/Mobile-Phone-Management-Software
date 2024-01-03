@@ -54,6 +54,16 @@ public class Connect {
         String fechaEntregaString = fechaEntrega.format(date);
 
         //fin fecha entrega
+        String fallasReparar = modeloTicket.getOtrasFalla();
+        
+                Iterator<String> iter = modeloTicket.getLista().iterator();
+            while (iter.hasNext()) {
+               fallasReparar = fallasReparar+iter.next()+ ", ";
+                
+                // System.out.print(iter.next() + " ultimo insert=  " + last);
+               
+            }
+            System.out.println("falla a reprar" +  fallasReparar);
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, fechaRecibido);
             pstmt.setString(2, modeloTicket.getNombre());
@@ -62,7 +72,8 @@ public class Connect {
             pstmt.setString(5, fechaEntregaString);
             pstmt.setString(6, modeloTicket.getMarca());
             pstmt.setString(7, modeloTicket.getModelo());
-            pstmt.setString(8, modeloTicket.getOtrasFalla());
+            
+            pstmt.setString(8,fallasReparar );  
             pstmt.setDouble(9, modeloTicket.getPresupueto());
             pstmt.setDouble(10, modeloTicket.getAbono());
             pstmt.setDouble(11, modeloTicket.getResto());
@@ -116,8 +127,8 @@ public class Connect {
     }
 
     public DefaultTableModel selectAll() {
-        String sql = "SELECT folio,nombre, fecha, FechaEntrega FROM ticket";
-        String[] columnNames = {"FOLIO","NOMBRE", "FECHA ENTRADA", "FECHA ENTREGA", "Editar"};
+        String sql = "SELECT folio,nombre,otraFalla, fecha, FechaEntrega FROM ticket";
+        String[] columnNames = {"FOLIO","NOMBRE","SERVICIO", "FECHA ENTRADA", "FECHA ENTREGA", "Editar"};
         DefaultTableModel tableModel = new DefaultTableModel() {
 
             @Override
@@ -140,9 +151,10 @@ public class Connect {
 //                        + rs.getString("FechaEntrega"));
                 fila[0] = rs.getInt("folio");
                 fila[1] = rs.getString("Nombre");
-                fila[2] = rs.getString("fecha");
-                fila[3] = rs.getString("FechaEntrega");
-                fila[4] = editar;
+                fila[2] = rs.getString("otraFalla");
+                fila[3] = rs.getString("fecha");
+                fila[4] = rs.getString("FechaEntrega");
+                fila[5] = editar;
                 tableModel.addRow(fila);
 
             }
